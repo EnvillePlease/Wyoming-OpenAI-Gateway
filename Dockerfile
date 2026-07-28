@@ -3,7 +3,11 @@ FROM python:3.13-slim AS builder
 
 WORKDIR /build
 COPY . .
-RUN pip install hatchling && pip wheel --no-cache-dir --wheel-dir /wheels .
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install hatchling \
+    && pip wheel --no-cache-dir --wheel-dir /wheels .
 
 # Stage 2: Runtime
 FROM python:3.13-slim
